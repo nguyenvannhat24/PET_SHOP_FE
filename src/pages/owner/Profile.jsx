@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { updateUser } from '../../store/slices/authSlice';
 import apiClient from '../../services/apiClient';
+import getImageUrl from '../../utils/imageUrl';
 
 const Profile = () => {
   const dispatch = useDispatch();
@@ -112,17 +113,7 @@ const Profile = () => {
 
   // Hàm helper để tạo link ảnh đầy đủ
   const getAvatarSrc = () => {
-    if (formData.avatar_url) {
-      if (formData.avatar_url.startsWith('http')) return formData.avatar_url;
-
-      // Xử lý trường hợp URL bị lỗi dấu \ trên Windows hoặc thiếu dấu / ở đầu
-      let path = formData.avatar_url.replace(/\\/g, '/');
-      if (!path.startsWith('/')) {
-        path = '/' + path;
-      }
-      return `http://localhost:5000${path}`;
-    }
-    return 'https://via.placeholder.com/150?text=Avatar';
+    return getImageUrl(formData.avatar_url, 'https://via.placeholder.com/150?text=Avatar');
   };
 
   return (

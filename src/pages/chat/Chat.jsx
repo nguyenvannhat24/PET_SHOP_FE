@@ -8,6 +8,7 @@ import {
 } from 'lucide-react';
 import apiClient from '../../services/apiClient';
 import { getSocket } from '../../services/socketClient';
+import getImageUrl from '../../utils/imageUrl';
 
 const Chat = () => {
   const [searchParams] = useSearchParams();
@@ -268,16 +269,36 @@ const Chat = () => {
     }
   };
 
+  const formatMediaUrl = (url) => {
+    return getImageUrl(url, '');
+  };
+
   const getPartnerAvatar = (partner) => {
-    if (partner?.avatar_url) {
-      if (partner.avatar_url.startsWith('http')) return partner.avatar_url;
-      let path = partner.avatar_url.replace(/\\/g, '/');
-      if (!path.startsWith('/')) path = '/' + path;
-      return `http://localhost:5000${path}`;
+    if (!partner) return 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150&auto=format&fit=crop&q=80';
+
+    // 1. Nếu đối tác là Cơ sở Thú y / Cửa hàng (CLINIC) -> Ưu tiên tuyệt đối Logo cửa hàng
+    if (partner.role === 'CLINIC' || partner.clinic) {
+      const storeLogo = partner.clinic?.logo_url || partner.clinic?.image || partner.avatar_url;
+      if (storeLogo) {
+        return formatMediaUrl(storeLogo);
+      }
+      return 'https://images.unsplash.com/photo-1584813470613-5b1c1cad3d69?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&q=80';
     }
-    if (partner?.clinic?.logo_url) {
-      return partner.clinic.logo_url;
+
+    // 2. Nếu đối tác là Bác sĩ thú y (VETERINARIAN)
+    if (partner.role === 'VETERINARIAN' || partner.veterinarian) {
+      const vetAvatar = partner.veterinarian?.avatar_url || partner.avatar_url;
+      if (vetAvatar) {
+        return formatMediaUrl(vetAvatar);
+      }
+      return 'https://images.unsplash.com/photo-1622253692010-333f2da6031d?w=150&auto=format&fit=crop&q=80';
     }
+
+    // 3. Khách hàng / Chủ thú cưng (PET_OWNER)
+    if (partner.avatar_url) {
+      return formatMediaUrl(partner.avatar_url);
+    }
+
     return 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150&auto=format&fit=crop&q=80';
   };
 
@@ -370,6 +391,10 @@ const Chat = () => {
                         src={getPartnerAvatar(partner)}
                         alt="Avatar"
                         className="w-12 h-12 rounded-2xl object-cover border border-gray-200 shadow-xs"
+                        onError={(e) => {
+                          e.target.onerror = null;
+                          e.target.src = 'https://images.unsplash.com/photo-1584813470613-5b1c1cad3d69?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&q=80';
+                        }}
                       />
                       <span className="absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 bg-emerald-500 border-2 border-white rounded-full"></span>
                     </div>
@@ -427,6 +452,10 @@ const Chat = () => {
                       src={getPartnerAvatar(activeConversation.partner)}
                       alt="Avatar"
                       className="w-10 h-10 sm:w-11 sm:h-11 rounded-2xl object-cover border border-gray-100 shadow-xs"
+                      onError={(e) => {
+                        e.target.onerror = null;
+                        e.target.src = 'https://images.unsplash.com/photo-1584813470613-5b1c1cad3d69?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&q=80';
+                      }}
                     />
                     <span className="absolute bottom-0 right-0 w-3 h-3 bg-emerald-500 border-2 border-white rounded-full"></span>
                   </div>
@@ -476,6 +505,10 @@ const Chat = () => {
                             src={getPartnerAvatar(activeConversation.partner)}
                             alt="Avatar"
                             className="w-7 h-7 rounded-xl object-cover mb-1 shrink-0"
+                            onError={(e) => {
+                              e.target.onerror = null;
+                              e.target.src = 'https://images.unsplash.com/photo-1584813470613-5b1c1cad3d69?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&q=80';
+                            }}
                           />
                         )}
 
@@ -489,7 +522,7 @@ const Chat = () => {
                           {msg.message_type === 'IMAGE' && msg.file_url ? (
                             <div className="rounded-xl overflow-hidden mb-1">
                               <img
-                                src={msg.file_url}
+                                src={formatMediaUrl(msg.file_url)}
                                 alt="Ảnh gửi"
                                 className="max-h-60 rounded-xl object-cover hover:scale-105 transition-transform"
                               />

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import apiClient from '../../services/apiClient';
+import getImageUrl from '../../utils/imageUrl';
 
 const OwnerDashboard = () => {
   const [pets, setPets] = useState([]);
@@ -21,11 +22,7 @@ const OwnerDashboard = () => {
   }, []);
 
   const getAvatarSrc = (url) => {
-    if (!url) return 'https://via.placeholder.com/150?text=Pet';
-    if (url.startsWith('http')) return url;
-    let path = url.replace(/\\/g, '/');
-    if (!path.startsWith('/')) path = '/' + path;
-    return `http://localhost:5000${path}`;
+    return getImageUrl(url, 'https://via.placeholder.com/150?text=Pet');
   };
 
   const calculateAge = (dob) => {

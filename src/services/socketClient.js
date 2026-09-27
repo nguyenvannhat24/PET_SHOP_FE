@@ -1,7 +1,7 @@
 import { io } from 'socket.io-client';
 
 let socketInstance = null;
-const SOCKET_URL = 'http://localhost:5000';
+const SOCKET_URL = import.meta.env.VITE_SOCKET_URL || (typeof window !== 'undefined' && window.location.port === '5173' ? 'http://localhost:5000' : '/');
 
 export const getSocket = (userId) => {
   if (!socketInstance) {

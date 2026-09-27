@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { updateUser } from '../../store/slices/authSlice';
 import apiClient from '../../services/apiClient';
+import getImageUrl from '../../utils/imageUrl';
 
 const ALL_DAYS = ['Thứ 2', 'Thứ 3', 'Thứ 4', 'Thứ 5', 'Thứ 6', 'Thứ 7', 'Chủ nhật'];
 
@@ -87,11 +88,7 @@ const ClinicProfile = () => {
   }, [user]);
 
   const getAvatarSrc = (avatar_url) => {
-    if (!avatar_url) return 'https://via.placeholder.com/150?text=Clinic';
-    if (avatar_url.startsWith('http')) return avatar_url;
-    let path = avatar_url.replace(/\\/g, '/');
-    if (!path.startsWith('/')) path = '/' + path;
-    return `http://localhost:5000${path}`;
+    return getImageUrl(avatar_url, 'https://via.placeholder.com/150?text=Clinic');
   };
 
   const handleChange = (e) => {

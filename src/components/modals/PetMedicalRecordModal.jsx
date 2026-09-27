@@ -5,6 +5,7 @@ import {
   Sparkles, ShieldCheck, Heart, Info, Pill, Plus, X
 } from 'lucide-react';
 import apiClient from '../../services/apiClient';
+import getImageUrl from '../../utils/imageUrl';
 
 const PetMedicalRecordModal = ({ isOpen, onClose, pet }) => {
   const [activeTab, setActiveTab] = useState('RECORDS'); // RECORDS, VACCINES, PROFILE
@@ -52,11 +53,7 @@ const PetMedicalRecordModal = ({ isOpen, onClose, pet }) => {
   if (!isOpen || !pet) return null;
 
   const getAvatarSrc = (url) => {
-    if (!url) return 'https://images.unsplash.com/photo-1543466835-00a7907e9de1?w=150&auto=format&fit=crop&q=80';
-    if (url.startsWith('http')) return url;
-    let path = url.replace(/\\/g, '/');
-    if (!path.startsWith('/')) path = '/' + path;
-    return `http://localhost:5000${path}`;
+    return getImageUrl(url, 'https://images.unsplash.com/photo-1543466835-00a7907e9de1?w=150&auto=format&fit=crop&q=80');
   };
 
   const formatDate = (dateStr) => {

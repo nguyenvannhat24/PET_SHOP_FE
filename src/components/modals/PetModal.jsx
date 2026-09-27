@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import apiClient from '../../services/apiClient';
+import getImageUrl from '../../utils/imageUrl';
 
 const PetModal = ({ isOpen, onClose, pet, onSave }) => {
   const isEditMode = !!pet;
@@ -90,8 +91,8 @@ const PetModal = ({ isOpen, onClose, pet, onSave }) => {
       const response = await apiClient.post('/upload', formDataUpload, {
         headers: { 'Content-Type': 'multipart/form-data' },
       });
-      const newAvatarUrl = response.data.data.url;
-      setFormData(prev => ({ ...prev, avatar_url: newAvatarUrl }));
+      const newAvatarUrl = response.data?.data?.url || response.data?.url || response.data?.imageUrl || response.data?.data?.imageUrl || '';
+      setFormData(prev => ({ ...prev, avatar_url: newAvatarUrl, image_url: newAvatarUrl }));
     } catch (err) {
       console.error("Lỗi upload ảnh:", err);
       setError('Tải ảnh thất bại. Vui lòng thử lại.');
@@ -109,6 +110,7 @@ const PetModal = ({ isOpen, onClose, pet, onSave }) => {
       // Prepare payload (handle empty numeric fields if necessary)
       const payload = {
         ...formData,
+        image_url: formData.avatar_url,
         weight: formData.weight ? parseFloat(formData.weight) : null,
       };
 
@@ -129,13 +131,7 @@ const PetModal = ({ isOpen, onClose, pet, onSave }) => {
   };
 
   const getAvatarSrc = () => {
-    if (formData.avatar_url) {
-      if (formData.avatar_url.startsWith('http')) return formData.avatar_url;
-      let path = formData.avatar_url.replace(/\\/g, '/');
-      if (!path.startsWith('/')) path = '/' + path;
-      return `http://localhost:5000${path}`;
-    }
-    return 'https://via.placeholder.com/150?text=Pet';
+    return getImageUrl(formData.avatar_url, 'https://via.placeholder.com/150?text=Pet');
   };
 
   return (

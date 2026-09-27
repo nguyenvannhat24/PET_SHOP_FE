@@ -7,6 +7,7 @@ import {
 } from 'lucide-react';
 import { logout } from '../store/slices/authSlice';
 import NotificationBell from '../components/NotificationBell';
+import getImageUrl from '../utils/imageUrl';
 
 const AdminLayout = () => {
   const user = useSelector((state) => state.auth.user);
@@ -19,11 +20,7 @@ const AdminLayout = () => {
   };
 
   const getAvatarSrc = (avatar_url) => {
-    if (!avatar_url) return 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80';
-    if (avatar_url.startsWith('http')) return avatar_url;
-    let path = avatar_url.replace(/\\/g, '/');
-    if (!path.startsWith('/')) path = '/' + path;
-    return `http://localhost:5000${path}`;
+    return getImageUrl(avatar_url, 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80');
   };
 
   const navLinkClass = ({ isActive }) => 

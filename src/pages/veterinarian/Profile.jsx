@@ -5,6 +5,7 @@ import {
 } from 'lucide-react';
 import apiClient from '../../services/apiClient';
 import { useModal } from '../../context/ModalContext';
+import getImageUrl from '../../utils/imageUrl';
 
 const ALL_DAYS = ['Thứ 2', 'Thứ 3', 'Thứ 4', 'Thứ 5', 'Thứ 6', 'Thứ 7', 'Chủ nhật'];
 
@@ -118,11 +119,7 @@ const VeterinarianProfile = () => {
   };
 
   const getAvatarSrc = (avatar_url) => {
-    if (!avatar_url) return 'https://images.unsplash.com/photo-1622253692010-333f2da6031d?w=150&auto=format&fit=crop&q=80';
-    if (avatar_url.startsWith('http')) return avatar_url;
-    let path = avatar_url.replace(/\\/g, '/');
-    if (!path.startsWith('/')) path = '/' + path;
-    return `http://localhost:5000${path}`;
+    return getImageUrl(avatar_url, 'https://images.unsplash.com/photo-1622253692010-333f2da6031d?w=150&auto=format&fit=crop&q=80');
   };
 
   if (loading) {

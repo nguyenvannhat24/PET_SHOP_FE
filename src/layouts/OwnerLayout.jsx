@@ -4,6 +4,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { Home, Calendar, FileText, User, LogOut, Activity, MessageSquare } from 'lucide-react';
 import { logout } from '../store/slices/authSlice';
 import NotificationBell from '../components/NotificationBell';
+import getImageUrl from '../utils/imageUrl';
 
 const OwnerLayout = () => {
   const user = useSelector((state) => state.auth.user);
@@ -16,11 +17,7 @@ const OwnerLayout = () => {
   };
 
   const getAvatarSrc = (avatar_url) => {
-    if (!avatar_url) return 'https://via.placeholder.com/150?text=Avatar';
-    if (avatar_url.startsWith('http')) return avatar_url;
-    let path = avatar_url.replace(/\\/g, '/');
-    if (!path.startsWith('/')) path = '/' + path;
-    return `http://localhost:5000${path}`;
+    return getImageUrl(avatar_url, 'https://via.placeholder.com/150?text=Avatar');
   };
 
   const navLinkClass = ({ isActive }) =>

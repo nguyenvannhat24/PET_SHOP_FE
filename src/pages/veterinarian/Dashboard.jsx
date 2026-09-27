@@ -6,6 +6,7 @@ import {
 } from 'lucide-react';
 import apiClient from '../../services/apiClient';
 import { useModal } from '../../context/ModalContext';
+import getImageUrl from '../../utils/imageUrl';
 
 const VeterinarianDashboard = () => {
   const { showAlert, showConfirm } = useModal();
@@ -173,11 +174,7 @@ const VeterinarianDashboard = () => {
   };
 
   const getPetImage = (url) => {
-    if (!url) return 'https://images.unsplash.com/photo-1543466835-00a7907e9de1?w=150&auto=format&fit=crop&q=80';
-    if (url.startsWith('http')) return url;
-    let path = url.replace(/\\/g, '/');
-    if (!path.startsWith('/')) path = '/' + path;
-    return `http://localhost:5000${path}`;
+    return getImageUrl(url, 'https://images.unsplash.com/photo-1543466835-00a7907e9de1?w=150&auto=format&fit=crop&q=80');
   };
 
   const getStatusBadge = (status) => {

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import apiClient from '../../services/apiClient';
+import getImageUrl from '../../utils/imageUrl';
 
 const MOCK_CLINICS = [
   {
@@ -140,9 +141,13 @@ const Home = () => {
               <div key={clinic._id} className="bg-white rounded-3xl overflow-hidden shadow-md hover:shadow-2xl transition-all duration-300 border border-gray-100 flex flex-col">
                 <div className="h-48 overflow-hidden relative">
                   <img
-                    src={'http://localhost:5000' + clinic.logo_url || clinic.image || 'https://images.unsplash.com/photo-1584813470613-5b1c1cad3d69?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80'}
+                    src={getImageUrl(clinic.logo_url || clinic.image, 'https://images.unsplash.com/photo-1584813470613-5b1c1cad3d69?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80')}
                     alt={clinic.name}
                     className="w-full h-full object-cover transition-transform duration-500 hover:scale-110"
+                    onError={(e) => {
+                      e.target.onerror = null;
+                      e.target.src = 'https://images.unsplash.com/photo-1584813470613-5b1c1cad3d69?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80';
+                    }}
                   />
                   <div className="absolute top-4 right-4 bg-white px-3 py-1 rounded-full text-sm font-bold shadow flex items-center gap-1">
                     <span className="text-yellow-400">★</span> {clinic.average_rating || 5.0}

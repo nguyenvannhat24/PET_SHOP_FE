@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import apiClient from '../../services/apiClient';
 import AppointmentModal from '../../components/modals/AppointmentModal';
 import { useModal } from '../../context/ModalContext';
+import getImageUrl from '../../utils/imageUrl';
 
 const Clinics = () => {
   const navigate = useNavigate();
@@ -151,9 +152,13 @@ const Clinics = () => {
                   <div className="flex-1">
                     <div className="flex items-start gap-4 mb-4">
                       <img
-                        src={'http://localhost:5000' + clinic.logo_url || 'https://images.unsplash.com/photo-1584813470613-5b1c1cad3d69?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&q=80'}
+                        src={getImageUrl(clinic.logo_url, 'https://images.unsplash.com/photo-1584813470613-5b1c1cad3d69?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&q=80')}
                         alt={clinic.name}
                         className="w-20 h-20 rounded-2xl object-cover border border-gray-100 shadow-sm flex-shrink-0"
+                        onError={(e) => {
+                          e.target.onerror = null;
+                          e.target.src = 'https://images.unsplash.com/photo-1584813470613-5b1c1cad3d69?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&q=80';
+                        }}
                       />
                       <div>
                         <span className="inline-block px-3 py-1 bg-emerald-50 text-emerald-700 rounded-full text-xs font-bold mb-2">

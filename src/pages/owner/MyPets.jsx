@@ -4,6 +4,7 @@ import PetModal from '../../components/modals/PetModal';
 import PetMedicalRecordModal from '../../components/modals/PetMedicalRecordModal';
 import { useModal } from '../../context/ModalContext';
 import { Activity, AlertTriangle, Heart, ShieldCheck } from 'lucide-react';
+import getImageUrl from '../../utils/imageUrl';
 
 const MyPets = () => {
   const { showAlert, showConfirm } = useModal();
@@ -81,11 +82,7 @@ const MyPets = () => {
   };
 
   const getAvatarSrc = (url) => {
-    if (!url) return 'https://images.unsplash.com/photo-1543466835-00a7907e9de1?w=150&auto=format&fit=crop&q=80';
-    if (url.startsWith('http')) return url;
-    let path = url.replace(/\\/g, '/');
-    if (!path.startsWith('/')) path = '/' + path;
-    return `http://localhost:5000${path}`;
+    return getImageUrl(url, 'https://images.unsplash.com/photo-1543466835-00a7907e9de1?w=150&auto=format&fit=crop&q=80');
   };
 
   const calculateAge = (dob) => {
@@ -143,9 +140,13 @@ const MyPets = () => {
               <div>
                 <div className="p-6 flex gap-4 items-start relative">
                   <img 
-                    src={getAvatarSrc(pet.avatar_url)} 
+                    src={getAvatarSrc(pet.avatar_url || pet.image_url)} 
                     alt={pet.name} 
                     className="w-24 h-24 rounded-2xl object-cover shadow-sm border border-gray-100 shrink-0" 
+                    onError={(e) => {
+                      e.target.onerror = null;
+                      e.target.src = 'https://images.unsplash.com/photo-1543466835-00a7907e9de1?w=150&auto=format&fit=crop&q=80';
+                    }}
                   />
                   <div className="flex-1 min-w-0">
                     <h3 className="text-xl font-bold text-gray-900 truncate">{pet.name}</h3>

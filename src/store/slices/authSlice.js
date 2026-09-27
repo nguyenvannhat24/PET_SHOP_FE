@@ -4,6 +4,9 @@ const savedToken = localStorage.getItem('accessToken');
 let savedUser = null;
 try {
   savedUser = localStorage.getItem('user') ? JSON.parse(localStorage.getItem('user')) : null;
+  if (savedUser && savedUser.user && typeof savedUser.user === 'object') {
+    savedUser = savedUser.user;
+  }
 } catch (e) {
   savedUser = null;
 }

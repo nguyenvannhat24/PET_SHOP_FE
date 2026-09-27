@@ -19,8 +19,9 @@ const Login = () => {
 
     try {
       const response = await apiClient.post('/auth/login', { email, password });
-      // Backend trả về: { success: true, data: {...user}, token: "..." }
-      const { data: user, token } = response.data;
+      const resData = response.data;
+      const token = resData.token || resData.data?.token;
+      const user = (resData.data && resData.data.user) ? resData.data.user : (resData.data || resData.user);
 
       localStorage.setItem('accessToken', token);
       localStorage.setItem('user', JSON.stringify(user));
